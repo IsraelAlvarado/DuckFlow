@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+pandas
+numpy
+python-multipart
+python-dotenv
+pyyaml
+rarfile        # optional: also needs system `unrar` binary (apt install unrar)
