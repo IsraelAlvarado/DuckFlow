@@ -258,6 +258,11 @@ Los datasets se almacenan en Parquet dentro de `data/datasets/` y se catalogan e
 ## Licencia
 
 MIT
+
+## Link Vercel
+https://duck-flow-two.vercel.app/
+
+##Preview
 <img width="2494" height="1246" alt="image" src="https://github.com/user-attachments/assets/602851ab-2a9e-4651-8afb-40e12663a232" />
 <img width="2512" height="1033" alt="image" src="https://github.com/user-attachments/assets/f1110403-2b1a-49f8-a543-823f0eda168d" />
 <img width="2460" height="1240" alt="image" src="https://github.com/user-attachments/assets/1cfed5d0-0670-48c9-a989-2a3c2825c9b7" />
