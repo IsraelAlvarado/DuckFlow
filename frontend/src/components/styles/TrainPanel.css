@@ -464,3 +464,267 @@
   .mode-row { flex-direction: column; gap: 8px; }
   .kpi-row { grid-template-columns: 1fr 1fr; }
 }
+
+  .shap-config-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #eff6ff 100%);
+    border-color: #c4b5fd;
+  }
+
+  .shap-config-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-top: 4px;
+  }
+
+  .shap-notice {
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: #fef9c3;
+    border: 1px solid #fde68a;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #92400e;
+    line-height: 1.5;
+  }
+
+  .shap-loading {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    color: #6d28d9;
+    font-size: 13px;
+  }
+
+  .shap-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #c4b5fd;
+    border-top-color: #7c3aed;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .shap-result-header {
+    margin-bottom: 14px;
+  }
+
+  .shap-meta-pills {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .shap-pill {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .shap-pill-model     { background: #ede9fe; color: #5b21b6; }
+  .shap-pill-explainer { background: #dbeafe; color: #1e40af; }
+  .shap-pill-n         { background: #f0fdf4; color: #166534; }
+  .shap-pill-base      { background: #fef3c7; color: #92400e; }
+
+  .shap-importance-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .shap-imp-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .shap-imp-rank {
+    font-size: 10px;
+    font-weight: 700;
+    color: #94a3b8;
+    min-width: 18px;
+    text-align: right;
+  }
+
+  .shap-imp-name {
+    font-size: 12px;
+    color: #334155;
+    width: 180px;
+    flex-shrink: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .shap-imp-bar-wrap {
+    flex: 1;
+    height: 8px;
+    background: #f1f5f9;
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .shap-imp-bar {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.4s ease;
+  }
+
+  .shap-imp-val {
+    font-size: 11px;
+    font-weight: 700;
+    font-family: monospace;
+    color: #475569;
+    min-width: 58px;
+    text-align: right;
+  }
+
+  .shap-imp-pct {
+    font-size: 10px;
+    color: #94a3b8;
+    min-width: 36px;
+    text-align: right;
+  }
+
+  .shap-run-btn {
+    padding: 9px 20px;
+    font-size: 13px;
+    background: #7c3aed;
+    width: 100%;
+  }
+
+  .shap-chart-tabs {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+
+  .shap-chart-tab {
+    flex: 1;
+    min-width: 140px;
+    padding: 10px 14px;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    background: white;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.14s;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .shap-chart-tab:hover { border-color: #7c3aed; }
+
+  .shap-chart-tab-active {
+    border-color: #7c3aed;
+    background: #faf5ff;
+  }
+
+  .sct-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f172a;
+    display: block;
+  }
+
+  .shap-chart-tab-active .sct-label { color: #5b21b6; }
+
+  .sct-desc {
+    font-size: 11px;
+    color: #94a3b8;
+    display: block;
+  }
+
+  .shap-chart-card {
+    margin-bottom: 14px;
+  }
+
+  .shap-color-legend {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .shap-color-gradient {
+    width: 80px;
+    height: 8px;
+    border-radius: 4px;
+    background: linear-gradient(to right, #3498db, #e74c3c);
+  }
+
+  .shap-waterfall-meta {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .shap-dep-selector {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .shap-guide-card {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+  }
+
+  .shap-guide-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+    margin-top: 10px;
+  }
+
+  .shap-guide-item {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .shap-guide-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    display: inline-block;
+  }
+
+  .shap-guide-icon-beeswarm  { background: linear-gradient(135deg, #3498db 0%, #e74c3c 100%); }
+  .shap-guide-icon-waterfall { background: linear-gradient(135deg, #e74c3c 0%, #3498db 100%); }
+  .shap-guide-icon-dep       { background: linear-gradient(135deg, #7c3aed 0%, #3b82f6 100%); }
+
+  .shap-guide-title {
+    margin: 0 0 3px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f172a;
+  }
+
+  .shap-guide-text {
+    margin: 0;
+    font-size: 12px;
+    color: #64748b;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 640px) {
+    .shap-config-grid { grid-template-columns: 1fr; }
+    .shap-chart-tabs  { flex-direction: column; }
+    .shap-imp-name    { width: 120px; }
+  }

@@ -1,0 +1,16 @@
+fastapi
+uvicorn[standard]
+pandas
+numpy
+python-multipart
+python-dotenv
+pyyaml
+duckdb
+pyarrow
+scikit-learn
+scipy
+shap
+rarfile
+google-auth-oauthlib
+google-api-python-client
+boto3

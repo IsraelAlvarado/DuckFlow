@@ -1,14 +1,3 @@
-"""
-routers/datasets.py — Dataset management endpoints.
-
-Endpoints:
-  GET    /api/v1/datasets
-  DELETE /api/v1/datasets/{id}
-  POST   /api/v1/upload-csv
-  POST   /api/v1/upload-archive
-  POST   /api/v1/extract-from-archive
-  GET    /api/v1/export/{id}
-"""
 from __future__ import annotations
 
 import io
@@ -22,6 +11,7 @@ import pandas as pd
 from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import StreamingResponse
 
+from core.engine import DEFAULT_ENGINE, SUPPORTED_ENGINES, read_csv
 from core.store import (
     archives,
     dataset_meta,
@@ -57,7 +47,6 @@ async def list_datasets():
 @router.delete("/datasets/{dataset_id}")
 async def remove_dataset(dataset_id: str):
     if dataset_id not in dataset_meta:
-        # Try catalog before giving up
         metas = list_meta()
         if not any(m["id"] == dataset_id for m in metas):
             raise HTTPException(404, "Dataset no encontrado.")
@@ -67,7 +56,24 @@ async def remove_dataset(dataset_id: str):
 
 # ── Upload CSV(s) ──────────────────────────────────────────────────────
 @router.post("/upload-csv")
-async def upload_csv(files: List[UploadFile] = File(...)):
+async def upload_csv(
+    files: List[UploadFile] = File(...),
+    engine: str = Form(DEFAULT_ENGINE),
+):
+    """
+    Upload one or more CSV files.
+
+    Parameters
+    ----------
+    files  : one or more CSV files
+    engine : parsing engine — "pandas" (default) or "polars"
+    """
+    if engine not in SUPPORTED_ENGINES:
+        raise HTTPException(
+            400,
+            f"Engine '{engine}' no soportado. Usa: {', '.join(SUPPORTED_ENGINES)}",
+        )
+
     results, errors = [], []
     for file in files:
         if not file.filename.lower().endswith(".csv"):
@@ -75,14 +81,17 @@ async def upload_csv(files: List[UploadFile] = File(...)):
             continue
         try:
             contents = await file.read()
-            df = pd.read_csv(io.BytesIO(contents))
+            df = read_csv(contents, engine=engine)
             if df.empty:
                 errors.append({"name": file.filename, "error": "El archivo está vacío."})
                 continue
-            results.append(register(df, file.filename))
+            info = register(df, file.filename)
+            info["engine_used"] = engine
+            results.append(info)
         except Exception as exc:
             errors.append({"name": file.filename, "error": str(exc)})
-    return {"loaded": results, "errors": errors}
+
+    return {"loaded": results, "errors": errors, "engine": engine}
 
 
 # ── Upload archive (ZIP / RAR) ─────────────────────────────────────────
@@ -128,7 +137,23 @@ async def upload_archive(file: UploadFile = File(...)):
 async def extract_from_archive(
     archive_id: str = Form(...),
     selected_files: str = Form(...),
+    engine: str = Form(DEFAULT_ENGINE),
 ):
+    """
+    Extract and load specific CSV files from a previously uploaded archive.
+
+    Parameters
+    ----------
+    archive_id     : ID returned by /upload-archive
+    selected_files : JSON array of file paths within the archive
+    engine         : parsing engine — "pandas" (default) or "polars"
+    """
+    if engine not in SUPPORTED_ENGINES:
+        raise HTTPException(
+            400,
+            f"Engine '{engine}' no soportado. Usa: {', '.join(SUPPORTED_ENGINES)}",
+        )
+
     if archive_id not in archives:
         raise HTTPException(404, "Archivo temporal no encontrado o expirado.")
 
@@ -146,14 +171,17 @@ async def extract_from_archive(
             for fname in files_to_load:
                 try:
                     with opener.open(fname) as f:
-                        df = pd.read_csv(f)
-                    results.append(register(df, os.path.basename(fname)))
+                        raw = f.read()
+                    df = read_csv(raw, engine=engine)
+                    info = register(df, os.path.basename(fname))
+                    info["engine_used"] = engine
+                    results.append(info)
                 except Exception as exc:
                     errors.append({"name": fname, "error": str(exc)})
     except Exception as exc:
         raise HTTPException(500, f"Error extrayendo archivos: {exc}")
 
-    return {"loaded": results, "errors": errors}
+    return {"loaded": results, "errors": errors, "engine": engine}
 
 
 # ── Export ─────────────────────────────────────────────────────────────

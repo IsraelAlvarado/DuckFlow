@@ -21,6 +21,16 @@
 
   const dispatch = createEventDispatcher();
 
+  // ── Engine selection ──────────────────────────────────────────────
+  type Engine = 'pandas' | 'polars';
+  let engine: Engine = 'pandas';
+
+  const ENGINE_OPTIONS: { value: Engine; label: string; desc: string }[] = [
+    { value: 'pandas', label: 'Pandas',  desc: 'Compatible, estable, ideal para datasets pequeños y medianos' },
+    { value: 'polars', label: 'Polars',  desc: 'Más rápido en archivos grandes' },
+  ];
+
+  // ── Upload state ───────────────────────────────────────────────────
   let csvFiles: File[] = [];
   let archiveFile: File | null = null;
   let archiveId: string | null = null;
@@ -46,12 +56,13 @@
     error = '';
     const form = new FormData();
     for (const f of csvInput.files) form.append('files', f);
+    form.append('engine', engine);
     try {
       const res = await fetch(`${apiBase}/api/v1/upload-csv`, { method: 'POST', body: form });
       const data = await res.json();
       if (data.errors?.length) error = data.errors.map((e: any) => `${e.name}: ${e.error}`).join(' | ');
       if (data.loaded?.length) {
-        showSuccess(`${data.loaded.length} dataset(s) cargados.`);
+        showSuccess(`${data.loaded.length} dataset(s) cargados con ${engineLabel(data.engine)}.`);
         dispatch('refresh');
       }
     } catch (e) {
@@ -104,12 +115,13 @@
     const form = new FormData();
     form.append('archive_id', archiveId);
     form.append('selected_files', JSON.stringify(selectedArchiveCsvs));
+    form.append('engine', engine);
     try {
       const res = await fetch(`${apiBase}/api/v1/extract-from-archive`, { method: 'POST', body: form });
       const data = await res.json();
       if (data.errors?.length) error = data.errors.map((e: any) => `${e.name}: ${e.error}`).join(' | ');
       if (data.loaded?.length) {
-        showSuccess(`${data.loaded.length} archivo(s) extraidos y cargados.`);
+        showSuccess(`${data.loaded.length} archivo(s) extraidos y cargados con ${engineLabel(data.engine)}.`);
         archiveId = null; archiveCsvList = []; selectedArchiveCsvs = [];
         if (archiveInput) archiveInput.value = '';
         dispatch('refresh');
@@ -130,6 +142,10 @@
   function fmtBytes(kb: number): string {
     return kb < 1024 ? `${kb} KB` : `${(kb / 1024).toFixed(1)} MB`;
   }
+
+  function engineLabel(e: string): string {
+    return e === 'polars' ? 'Polars' : 'Pandas';
+  }
 </script>
 
 <aside class="sidebar">
@@ -137,6 +153,26 @@
   <div class="sidebar-header">
     <h2 class="sidebar-title">Data Analyzer</h2>
     <p class="sidebar-subtitle">v2.0 — multi-dataset</p>
+  </div>
+
+  <!-- Engine Selector -->
+  <div class="sidebar-section">
+    <p class="section-label">Motor de lectura</p>
+    <div class="engine-toggle">
+      {#each ENGINE_OPTIONS as opt}
+        <button
+          class="engine-btn"
+          class:engine-btn-active={engine === opt.value}
+          on:click={() => (engine = opt.value)}
+          title={opt.desc}
+        >
+          {opt.label}
+        </button>
+      {/each}
+    </div>
+    <p class="engine-desc">
+      {ENGINE_OPTIONS.find(o => o.value === engine)?.desc ?? ''}
+    </p>
   </div>
 
   <!-- Upload CSV -->
