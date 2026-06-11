@@ -15,3 +15,4 @@ google-auth-oauthlib
 google-api-python-client
 boto3
 psycopg2-binary
+kaggle
